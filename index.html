@@ -634,76 +634,61 @@
   /* Force ABeeZee non-italic everywhere */
   * { font-style: normal !important; }
 
-  /* ====== TABLET / LANDSCAPE ====== */
-  @media (min-width: 600px) and (orientation: landscape) {
-    #game { flex-direction: row; flex-wrap: wrap; align-items: flex-start; padding-top: 0; }
+  /* ====== RESPONSIVE — baseado em largura, não orientação ====== */
 
-    .hud {
-      width: 100%;
-      max-width: 100%;
-      padding: 10px 24px 0;
+  /* Tablet e Desktop (>= 640px) */
+  @media (min-width: 640px) {
+    body { justify-content: center; }
+
+    #home { gap: 28px; }
+
+    .hud  { max-width: 680px; padding: 20px 28px 0; }
+    .progress-bar { max-width: 680px; }
+    .game-area    { max-width: 680px; padding: 12px 28px 24px; gap: 20px; }
+
+    .theme-emoji  { font-size: 80px; }
+
+    .option-btn {
+      min-width: 72px; height: 72px;
+      font-size: 28px;
     }
 
-    .progress-bar { width: 100%; max-width: 100%; }
+    .choose-btn   { font-size: 28px; padding: 18px 24px; }
 
-    .game-area {
+    .letter-box   { width: 58px; height: 64px; font-size: 34px; }
+    .syllable-box { min-width: 90px; height: 64px; font-size: 26px; }
+
+    .btn-check, .btn-clear { font-size: 18px; padding: 14px 28px; }
+
+    .question-card { padding: 28px 36px; }
+  }
+
+  /* Desktop grande (>= 1024px) — layout lado a lado */
+  @media (min-width: 1024px) {
+    .hud        { max-width: 900px; }
+    .progress-bar { max-width: 900px; }
+    .game-area  {
+      max-width: 900px;
       flex-direction: row;
       align-items: stretch;
-      justify-content: center;
-      max-width: 100%;
-      padding: 8px 24px 12px;
-      gap: 16px;
+      gap: 24px;
     }
 
     .question-card {
-      flex: 1;
-      max-width: 360px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      min-height: 0;
+      flex: 0 0 380px;
+      display: flex; flex-direction: column; justify-content: center;
     }
-
-    .theme-emoji { font-size: clamp(48px, 8vh, 72px); }
 
     .options-area {
       flex: 1;
-      max-width: 360px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 10px;
+      display: flex; flex-direction: column; justify-content: center;
+      gap: 12px;
     }
 
-    .choose-grid { gap: 10px; }
-    .choose-btn { padding: 12px 16px; font-size: clamp(18px, 3vh, 26px); }
-
-    .options-grid { gap: 8px; }
-    .option-btn {
-      min-width: clamp(44px, 7vh, 64px);
-      height: clamp(44px, 7vh, 64px);
-      font-size: clamp(16px, 3.5vh, 28px);
-    }
-
-    .letter-box {
-      width: clamp(30px, 6vh, 56px);
-      height: clamp(34px, 7vh, 60px);
-      font-size: clamp(16px, 4vh, 34px);
-    }
-
-    .action-row { margin-top: 8px; }
-  }
-
-  @media (min-width: 600px) and (orientation: portrait) {
-    .hud { max-width: 600px; }
-    .game-area { max-width: 600px; }
-    .theme-emoji { font-size: clamp(60px, 10vw, 100px); }
-    .choose-btn { font-size: clamp(24px, 4vw, 36px); }
-    .option-btn {
-      min-width: clamp(60px, 9vw, 90px);
-      height: clamp(60px, 9vw, 90px);
-      font-size: clamp(22px, 4vw, 36px);
-    }
+    .theme-emoji  { font-size: 100px; }
+    .choose-btn   { font-size: 26px; }
+    .option-btn   { min-width: 76px; height: 76px; font-size: 30px; }
+    .letter-box   { width: 62px; height: 68px; font-size: 36px; }
   }
 </style>
 </head>
