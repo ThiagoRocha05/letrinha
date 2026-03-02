@@ -169,12 +169,18 @@
   }
 
   /* ====== GAME SCREEN ====== */
-  #game { gap: 0; padding: 0; justify-content: flex-start; }
+  #game {
+    gap: 0;
+    padding: 0;
+    justify-content: flex-start;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
 
   .hud {
-    width: 100%; max-width: 700px;
+    width: 100%;
     display: flex; align-items: center; justify-content: space-between;
-    padding: 16px 20px 0;
+    padding: 12px 16px 0;
     flex-shrink: 0;
   }
   .hud-home-btn {
@@ -251,8 +257,8 @@
   .hud-lives { display: flex; gap: 4px; font-size: clamp(20px, 5vw, 26px); }
 
   .progress-bar-wrap {
-    width: 100%; max-width: 700px;
-    padding: 10px 20px;
+    width: 100%;
+    padding: 8px 16px;
     flex-shrink: 0;
   }
   .progress-bar {
@@ -270,12 +276,17 @@
   }
 
   .game-area {
-    flex: 1; width: 100%; max-width: 700px;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    padding: 10px 20px 20px;
-    gap: 24px;
-    overflow: hidden;
+    flex: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 8px 16px 16px;
+    gap: 12px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
   }
 
   /* Question card */
@@ -283,12 +294,12 @@
     background: rgba(255,255,255,0.08);
     border: 2px solid rgba(255,255,255,0.12);
     backdrop-filter: blur(20px);
-    border-radius: 28px;
-    padding: clamp(20px, 5vw, 36px) clamp(24px, 6vw, 48px);
+    border-radius: 24px;
+    padding: 16px 20px;
     width: 100%;
     text-align: center;
     position: relative;
-    overflow: hidden;
+    flex-shrink: 0;
   }
   .question-card::before {
     content: '';
@@ -300,9 +311,9 @@
   }
 
   .theme-emoji {
-    font-size: clamp(50px, 12vw, 80px);
+    font-size: clamp(44px, 11vw, 72px);
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     animation: bounce 1s ease-in-out infinite;
   }
   @keyframes bounce {
@@ -393,27 +404,29 @@
 
   /* Options row */
   .options-grid {
-    display: flex; gap: clamp(10px, 3vw, 16px);
+    display: flex; gap: clamp(8px, 2.5vw, 14px);
     flex-wrap: wrap; justify-content: center;
     width: 100%;
+    flex-shrink: 0;
   }
 
   .option-btn {
-    min-width: clamp(50px, 12vw, 76px);
-    height: clamp(50px, 12vw, 76px);
+    min-width: clamp(46px, 11vw, 68px);
+    height: clamp(46px, 11vw, 68px);
     border-radius: 16px;
     border: 3px solid rgba(255,255,255,0.2);
     background: rgba(255,255,255,0.1);
     color: white;
-    font-family: 'Nunito', sans-serif;
+    font-family: 'ABeeZee', sans-serif;
     font-weight: 900;
-    font-size: clamp(20px, 5.5vw, 36px);
+    font-size: clamp(18px, 5vw, 32px);
     cursor: pointer;
     transition: all 0.15s;
     position: relative;
     box-shadow: 0 4px 0 rgba(0,0,0,0.25);
-    padding: 0 10px;
+    padding: 0 8px;
     display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
   }
   .option-btn:active, .option-btn.selected {
     transform: translateY(3px);
@@ -428,6 +441,16 @@
     transform: scale(0.9);
   }
 
+  /* options-area wraps grid + action buttons */
+  .options-area {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
   /* For build-word mode: target word display */
   .build-target {
     font-family: 'ABeeZee', sans-serif;
@@ -435,23 +458,24 @@
     color: rgba(255,255,255,0.5);
     text-transform: uppercase;
     letter-spacing: 3px;
-    margin-top: -8px;
+    margin-top: -4px;
   }
 
   /* Action buttons */
   .action-row {
     display: flex; gap: 12px; width: 100%; justify-content: center;
+    flex-shrink: 0;
   }
   .btn-check {
     background: linear-gradient(135deg, var(--green), var(--teal));
     color: var(--dark);
     font-family: 'ABeeZee', sans-serif;
-    font-size: clamp(18px, 4.5vw, 24px);
-    padding: 14px 40px;
+    font-size: clamp(16px, 4vw, 22px);
+    padding: 13px 36px;
     border: none; border-radius: 50px; cursor: pointer;
     box-shadow: 0 6px 0 rgba(0,0,0,0.25);
     transition: all 0.1s;
-    flex: 1; max-width: 260px;
+    flex: 1; max-width: 240px;
   }
   .btn-check:active {
     transform: translateY(4px);
@@ -463,8 +487,8 @@
     background: rgba(255,255,255,0.1);
     color: rgba(255,255,255,0.7);
     font-family: 'ABeeZee', sans-serif;
-    font-size: clamp(18px, 4.5vw, 24px);
-    padding: 14px 24px;
+    font-size: clamp(16px, 4vw, 22px);
+    padding: 13px 20px;
     border: 2px solid rgba(255,255,255,0.2);
     border-radius: 50px; cursor: pointer;
     transition: all 0.1s;
@@ -634,61 +658,61 @@
   /* Force ABeeZee non-italic everywhere */
   * { font-style: normal !important; }
 
-  /* ====== RESPONSIVE — baseado em largura, não orientação ====== */
+  /* ====== RESPONSIVE ====== */
 
-  /* Tablet e Desktop (>= 640px) */
+  /* Tablet (>= 640px) — tudo maior, ainda em coluna */
   @media (min-width: 640px) {
-    body { justify-content: center; }
-
-    #home { gap: 28px; }
-
-    .hud  { max-width: 680px; padding: 20px 28px 0; }
-    .progress-bar { max-width: 680px; }
-    .game-area    { max-width: 680px; padding: 12px 28px 24px; gap: 20px; }
+    .hud   { padding: 16px 24px 0; }
+    .progress-bar-wrap { padding: 10px 24px; }
+    .game-area { padding: 10px 24px 20px; gap: 16px; }
 
     .theme-emoji  { font-size: 80px; }
 
-    .option-btn {
-      min-width: 72px; height: 72px;
-      font-size: 28px;
-    }
+    .question-card { padding: 20px 28px; }
 
-    .choose-btn   { font-size: 28px; padding: 18px 24px; }
+    .option-btn { min-width: 68px; height: 68px; font-size: 28px; }
 
-    .letter-box   { width: 58px; height: 64px; font-size: 34px; }
-    .syllable-box { min-width: 90px; height: 64px; font-size: 26px; }
+    .choose-btn   { font-size: 26px; padding: 16px 24px; }
 
-    .btn-check, .btn-clear { font-size: 18px; padding: 14px 28px; }
+    .letter-box   { width: 56px; height: 62px; font-size: 32px; }
+    .syllable-box { min-width: 88px; height: 62px; font-size: 24px; }
 
-    .question-card { padding: 28px 36px; }
+    .btn-check, .btn-clear { font-size: 18px; padding: 14px 32px; }
   }
 
-  /* Desktop grande (>= 1024px) — layout lado a lado */
-  @media (min-width: 1024px) {
-    .hud        { max-width: 900px; }
-    .progress-bar { max-width: 900px; }
-    .game-area  {
-      max-width: 900px;
+  /* Desktop (>= 960px) — layout dois painéis lado a lado */
+  @media (min-width: 960px) {
+    #game { align-items: center; }
+
+    .hud              { max-width: 860px; padding: 20px 32px 0; }
+    .progress-bar-wrap{ max-width: 860px; padding: 10px 32px; }
+
+    .game-area {
+      max-width: 860px;
       flex-direction: row;
-      align-items: stretch;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 12px 32px 24px;
       gap: 24px;
     }
 
     .question-card {
-      flex: 0 0 380px;
+      flex: 0 0 360px;
+      align-self: stretch;
       display: flex; flex-direction: column; justify-content: center;
+      padding: 28px 32px;
     }
 
     .options-area {
       flex: 1;
-      display: flex; flex-direction: column; justify-content: center;
-      gap: 12px;
+      align-self: stretch;
+      justify-content: center;
     }
 
-    .theme-emoji  { font-size: 100px; }
-    .choose-btn   { font-size: 26px; }
-    .option-btn   { min-width: 76px; height: 76px; font-size: 30px; }
-    .letter-box   { width: 62px; height: 68px; font-size: 36px; }
+    .theme-emoji  { font-size: 96px; }
+    .option-btn   { min-width: 72px; height: 72px; font-size: 30px; }
+    .choose-btn   { font-size: 24px; }
+    .letter-box   { width: 60px; height: 66px; font-size: 34px; }
   }
 </style>
 </head>
