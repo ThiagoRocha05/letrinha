@@ -680,6 +680,17 @@
     .btn-check, .btn-clear { font-size: 18px; padding: 14px 32px; }
   }
 
+  /* Home screen em tablet landscape — reduz logo para caber tudo */
+  @media (min-height: 400px) and (max-height: 700px) and (min-width: 600px) {
+    #home { gap: 12px; }
+    .logo-emoji { font-size: 54px !important; }
+    .logo-title { font-size: 48px !important; }
+    .logo-sub   { font-size: 15px; margin-top: 2px; }
+    .btn-primary { font-size: 22px; padding: 14px 48px; }
+    .phase-btn  { font-size: 13px; padding: 8px 16px; }
+    .best-score { font-size: 13px; }
+  }
+
   /* Desktop (>= 960px) — layout dois painéis lado a lado */
   @media (min-width: 960px) {
     #game { align-items: center; }
