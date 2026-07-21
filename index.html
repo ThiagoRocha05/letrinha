@@ -195,6 +195,25 @@
     flex-shrink: 0;
   }
   .hud-home-btn:active { background: rgba(255,255,255,0.25); transform: scale(0.9); }
+  .hud-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .hud-home-btn.small { width: 36px; height: 36px; font-size: 17px; }
+
+  .speak-btn {
+    background: rgba(78,205,196,0.18);
+    border: 2px solid rgba(78,205,196,0.4);
+    color: var(--teal);
+    font-family: 'ABeeZee', sans-serif;
+    font-size: clamp(13px, 3.2vw, 16px);
+    padding: 6px 16px;
+    border-radius: 50px;
+    cursor: pointer;
+    margin: 6px auto 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.15s;
+  }
+  .speak-btn:active { transform: scale(0.94); background: rgba(78,205,196,0.3); }
 
   /* Exit confirm overlay */
   #exitConfirm {
@@ -241,6 +260,7 @@
     transition: all 0.1s;
   }
   .exit-btn-no:active { transform: translateY(3px); box-shadow: none; }
+  .hud-stars {
     font-family: 'ABeeZee', sans-serif;
     font-size: clamp(20px, 5vw, 28px);
     color: var(--yellow);
@@ -633,6 +653,7 @@
     animation: wrongFlash 0.4s ease forwards;
   }
   .choose-btn.disabled { pointer-events: none; opacity: 0.4; }
+  .mode-tag {
     display: inline-block;
     font-size: clamp(11px, 2.5vw, 13px);
     font-weight: 900;
@@ -756,7 +777,10 @@
 <div class="screen hidden" id="game">
   <div class="hud">
     <div class="hud-stars">⭐ <span id="scoreDisplay">0</span></div>
-    <button class="hud-home-btn" onclick="confirmExit()">🏠</button>
+    <div class="hud-actions">
+      <button class="hud-home-btn small" id="soundBtn" onclick="toggleSound()" title="Ligar/desligar som">🔊</button>
+      <button class="hud-home-btn" onclick="confirmExit()">🏠</button>
+    </div>
     <div class="hud-level" id="levelDisplay">Fase 1 · Q1/8</div>
     <div class="hud-lives" id="livesDisplay">❤️❤️❤️</div>
   </div>
@@ -768,6 +792,7 @@
   <div class="game-area">
     <div class="question-card" id="questionCard">
       <span class="theme-emoji" id="themeEmoji">🐱</span>
+      <button class="speak-btn" id="speakBtn" onclick="speakCurrentWord(true)">🔊 Ouvir</button>
       <div class="mode-tag mode-letter" id="modeTag">Letra faltando</div>
       <div class="question-label" id="questionLabel">Complete a palavra!</div>
       <div class="word-display" id="wordDisplay"></div>
@@ -1250,6 +1275,7 @@ let currentMode  = 'letter';
 let blanks       = [];
 let blankIdxs    = [];
 let shuffledWords= [];
+let soundOn      = localStorage.getItem('letrinha_sound') !== 'off';
 
 // ============================================================
 //  INIT
@@ -1268,6 +1294,136 @@ function init() {
     sf.appendChild(s);
   }
   updateBestScore();
+  updateSoundBtn();
+  loadVoices();
+}
+
+// ============================================================
+//  SOUND & VOICE (Web Speech API + Web Audio API)
+// ============================================================
+function toggleSound() {
+  soundOn = !soundOn;
+  localStorage.setItem('letrinha_sound', soundOn ? 'on' : 'off');
+  updateSoundBtn();
+  if (soundOn) speak('Som ligado', {force: true});
+  else if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+}
+
+function updateSoundBtn() {
+  const btn = document.getElementById('soundBtn');
+  if (btn) btn.textContent = soundOn ? '🔊' : '🔇';
+}
+
+// Muitos mecanismos de TTS (Chrome, Android, Windows) tratam palavras curtas
+// TODAS EM MAIÚSCULAS como siglas e as soletram letra por letra (ex: "HEN" -> "H E N").
+// Normalizamos para Primeira maiúscula + resto minúsculo, que é lido como palavra normal.
+// Letras avulsas (1 caractere) ficam intactas de propósito: ali queremos o nome da letra.
+function naturalCase(text) {
+  if (!text || text.length <= 1) return text;
+  return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+}
+
+let __voicesCache = [];
+function loadVoices() {
+  if (!('speechSynthesis' in window)) return;
+  __voicesCache = window.speechSynthesis.getVoices();
+  if (!__voicesCache.length) {
+    window.speechSynthesis.onvoiceschanged = () => { __voicesCache = window.speechSynthesis.getVoices(); };
+  }
+}
+
+// Setar só a string de idioma (u.lang) nem sempre troca a voz de verdade em todo navegador.
+// Aqui procuramos uma voz instalada que bata com o idioma pedido; se não achar, cai no padrão do sistema.
+function pickVoice(lang) {
+  if (!__voicesCache.length) __voicesCache = window.speechSynthesis.getVoices();
+  const prefix = lang.split('-')[0];
+  return __voicesCache.find(v => v.lang === lang)
+      || __voicesCache.find(v => v.lang && v.lang.startsWith(prefix))
+      || null;
+}
+
+function speak(text, opts = {}) {
+  const { lang = 'pt-BR', rate = 0.85, force = false } = opts;
+  if (!force && !soundOn) return;
+  if (!('speechSynthesis' in window)) return;
+  try {
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(naturalCase(text));
+    const voice = pickVoice(lang);
+    if (voice) u.voice = voice;
+    u.lang = voice ? voice.lang : lang;
+    u.rate = rate;
+    u.pitch = 1.05;
+    window.speechSynthesis.speak(u);
+  } catch (e) { /* navegador sem suporte */ }
+}
+
+function speakCurrentWord(force = false) {
+  if (!currentData) return;
+  if (currentMode === 'choose') {
+    speak(currentData.hint || 'What is this?', { lang: 'en-US', rate: 0.85, force });
+  } else {
+    speak(currentData.word, { lang: 'pt-BR', rate: 0.8, force });
+  }
+}
+
+function primeAudio() {
+  // Destrava SpeechSynthesis e AudioContext no iOS/Safari; precisa rodar dentro de um gesto do usuário.
+  try {
+    if ('speechSynthesis' in window) {
+      const u = new SpeechSynthesisUtterance(' ');
+      u.volume = 0;
+      window.speechSynthesis.speak(u);
+    }
+  } catch (e) {}
+  getAudioCtx();
+}
+
+function getAudioCtx() {
+  if (!window.__audioCtx) {
+    try { window.__audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+    catch (e) { return null; }
+  }
+  if (window.__audioCtx.state === 'suspended') window.__audioCtx.resume().catch(()=>{});
+  return window.__audioCtx;
+}
+
+function playChime(correct) {
+  if (!soundOn) return;
+  const ctx = getAudioCtx();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+  try {
+    if (correct) {
+      [523.25, 659.25, 783.99].forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+        osc.connect(gain); gain.connect(ctx.destination);
+        const t = now + i * 0.09;
+        gain.gain.setValueAtTime(0.0001, t);
+        gain.gain.exponentialRampToValueAtTime(0.25, t + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.28);
+        osc.start(t); osc.stop(t + 0.3);
+      });
+    } else {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.value = 180;
+      osc.connect(gain); gain.connect(ctx.destination);
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.2, now + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.35);
+      osc.frequency.exponentialRampToValueAtTime(90, now + 0.35);
+      osc.start(now); osc.stop(now + 0.35);
+    }
+  } catch (e) {}
+}
+
+function vibrateFeedback(pattern) {
+  if (soundOn && navigator.vibrate) { try { navigator.vibrate(pattern); } catch (e) {} }
 }
 
 function updateBestScore() {
@@ -1287,6 +1443,7 @@ function selectPhase(btn, phase) {
 // ============================================================
 
 function startGame() {
+  primeAudio();
   const phaseData = PHASES[currentPhase];
   shuffledWords = shuffle([...phaseData.words]).slice(0, phaseData.questions);
   score = 0; lives = 3; currentQ = 0;
@@ -1351,6 +1508,8 @@ function loadQuestion() {
   }
 
   document.getElementById('checkBtn').disabled = true;
+  clearTimeout(window.__speakTimer);
+  window.__speakTimer = setTimeout(() => speakCurrentWord(), 400);
 }
 
 // ---- LETTER MODE ----
@@ -1471,12 +1630,17 @@ function pickChooseOption(btn, value) {
     });
     lives--;
     updateLives();
+    playChime(false);
+    vibrateFeedback([50,40,50]);
   }
 
   if(correct) {
     score += 8;
     spawnParticles(true);
+    playChime(true);
+    vibrateFeedback([30]);
     setTimeout(() => {
+      speak(currentData.eng, { lang: 'en-US', rate: 0.85 });
       showFeedback(true, 8, false);
     }, 700);
   } else if(lives <= 0) {
@@ -1541,6 +1705,14 @@ function pickOption(btn, mode) {
   if(btn.classList.contains('used')) return;
 
   const value = btn.dataset.value;
+  // Só falamos em voz alta no modo LETRA (nome de letra é bem definido: "bê", "cê"...).
+  // No modo sílaba/monte-a-palavra NUNCA falamos a opção isolada, nem quando ela tem
+  // 1 caractere só (existe sílaba de uma letra em português, tipo o "O" de PRÉDIO) —
+  // o critério certo é o modo da pergunta, não o tamanho do texto. Sílaba isolada é
+  // ambígua fora do contexto da palavra e, sem voz em português instalada, acaba caindo
+  // numa voz em inglês que soletra tudo. A palavra inteira já é falada certinho ao
+  // carregar a pergunta e pelo botão "Ouvir".
+  if (mode === 'letter') speak(value, { rate: 0.75 });
 
   if(mode === 'build' || mode === 'letter') {
     // Fill next empty slot sequentially
@@ -1614,6 +1786,8 @@ function onCorrect() {
   const pts = 5 + (currentPhase-1)*3;
   score += pts;
   spawnParticles(true);
+  playChime(true);
+  vibrateFeedback([30]);
 
   setTimeout(()=>{
     showFeedback(true, pts);
@@ -1623,6 +1797,8 @@ function onCorrect() {
 function onWrong() {
   lives--;
   updateLives();
+  playChime(false);
+  vibrateFeedback([50,40,50]);
 
   // Flash red on blank boxes
   document.querySelectorAll('.letter-box.blank').forEach(b => b.classList.add('wrong-flash'));
