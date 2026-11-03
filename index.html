@@ -817,6 +817,7 @@
   .result-extra .chips { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; }
   .newstk { font-size: 54px; animation: pop2 .7s ease both; }
   .choose-grid.row { flex-direction: row; justify-content: center; }
+  .choose-grid.toddler .choose-btn.emoji-opt { font-size: clamp(72px,24vw,130px); padding: 18px 10px; min-width: 40%; }
   .choose-btn.emoji-opt { font-size: clamp(46px,12vw,70px); letter-spacing:0; padding:12px 8px; line-height:1.1; }
   .choose-btn.letter-opt { font-size: clamp(44px,12vw,68px); letter-spacing:0; padding:12px 8px; }
   .combo-toast { position:fixed; left:50%; top:22%; transform:translateX(-50%); z-index:150; pointer-events:none;
@@ -854,11 +855,12 @@
   </div>
   <button class="btn-primary" onclick="startGame()">▶ JOGAR!</button>
   <div class="phase-select" id="phaseSelect">
-    <button class="phase-btn" onclick="selectPhase(this,0)">✏️ Fase 0</button>
-    <button class="phase-btn active" onclick="selectPhase(this,1)">🌱 Fase 1</button>
-    <button class="phase-btn" onclick="selectPhase(this,2)">🌿 Fase 2</button>
-    <button class="phase-btn" onclick="selectPhase(this,3)">🌳 Fase 3</button>
-    <button class="phase-btn" onclick="selectPhase(this,4)">🌟 Fase 4</button>
+    <button class="phase-btn" data-ph="5"></button>
+    <button class="phase-btn" data-ph="0"></button>
+    <button class="phase-btn" data-ph="1"></button>
+    <button class="phase-btn" data-ph="2"></button>
+    <button class="phase-btn" data-ph="3"></button>
+    <button class="phase-btn" data-ph="4"></button>
   </div>
   <div class="streak" id="streakDisplay"></div>
   <div class="best-score" id="bestScoreDisplay">Melhor pontuação: <span>0</span> ⭐</div>
@@ -1383,6 +1385,12 @@ PHASES[3].words.push(...[{word:"CAMINHÃO",emoji:"🚚",hint:"🚚"},{word:"AMBU
 PHASES[4].words.push(...[{word:"ABELHA",eng:"BEE",emoji:"🐝",hint:"What animal is this?"},{word:"PEIXE",eng:"FISH",emoji:"🐟",hint:"What animal is this?"},{word:"PÁSSARO",eng:"BIRD",emoji:"🐦",hint:"What animal is this?"},{word:"OVELHA",eng:"SHEEP",emoji:"🐑",hint:"What animal is this?"},{word:"BORBOLETA",eng:"BUTTERFLY",emoji:"🦋",hint:"What animal is this?"},{word:"ARANHA",eng:"SPIDER",emoji:"🕷️",hint:"What animal is this?"},{word:"TARTARUGA",eng:"TURTLE",emoji:"🐢",hint:"What animal is this?"},{word:"BALEIA",eng:"WHALE",emoji:"🐋",hint:"What animal is this?"},{word:"GOLFINHO",eng:"DOLPHIN",emoji:"🐬",hint:"What animal is this?"},{word:"CHAVE",eng:"KEY",emoji:"🔑",hint:"What is this?"},{word:"BOLSA",eng:"BAG",emoji:"👜",hint:"What is this?"},{word:"MEIA",eng:"SOCK",emoji:"🧦",hint:"What is this?"},{word:"BONÉ",eng:"CAP",emoji:"🧢",hint:"What is this?"},{word:"PIZZA",eng:"PIZZA",emoji:"🍕",hint:"What is this?"},{word:"QUEIJO",eng:"CHEESE",emoji:"🧀",hint:"What is this?"},{word:"ÁGUA",eng:"WATER",emoji:"💧",hint:"What is this?"},{word:"COROA",eng:"CROWN",emoji:"👑",hint:"What is this?"},{word:"REI",eng:"KING",emoji:"🤴",hint:"Who is this?"},{word:"RAINHA",eng:"QUEEN",emoji:"👸",hint:"Who is this?"},{word:"LÂMPADA",eng:"LAMP",emoji:"💡",hint:"What is this?"},{word:"PRESENTE",eng:"GIFT",emoji:"🎁",hint:"What is this?"},{word:"CAMINHÃO",eng:"TRUCK",emoji:"🚚",hint:"What is this?"},{word:"BICICLETA",eng:"BIKE",emoji:"🚲",hint:"What is this?"},{word:"FOGUETE",eng:"ROCKET",emoji:"🚀",hint:"What is this?"},{word:"ROBÔ",eng:"ROBOT",emoji:"🤖",hint:"What is this?"},{word:"CASTELO",eng:"CASTLE",emoji:"🏰",hint:"What is this?"},{word:"DRAGÃO",eng:"DRAGON",emoji:"🐲",hint:"What is this?"},{word:"FANTASMA",eng:"GHOST",emoji:"👻",hint:"What is this?"},{word:"NAVIO",eng:"SHIP",emoji:"🚢",hint:"What is this?"},{word:"LUA",eng:"MOON",emoji:"🌙",hint:"What is this?"}]);
 Object.assign(SYLLABLE_MAP, {"CASA":["CA", "SA"],"LUA":["LU", "A"],"SOL":["SOL"],"PÃO":["PÃO"],"OVO":["O", "VO"],"LEITE":["LEI", "TE"],"SUCO":["SU", "CO"],"ARROZ":["AR", "ROZ"],"CHAVE":["CHA", "VE"],"BOLSA":["BOL", "SA"],"CESTA":["CES", "TA"],"MAGO":["MA", "GO"],"REI":["REI"],"LUPA":["LU", "PA"],"LIXO":["LI", "XO"],"BALA":["BA", "LA"],"TENDA":["TEN", "DA"],"CALÇA":["CAL", "ÇA"],"RAIO":["RAI", "O"],"PIZZA":["PIZ", "ZA"],"ALHO":["A", "LHO"],"MEL":["MEL"],"CAFÉ":["CA", "FÉ"],"ILHA":["I", "LHA"],"PONTE":["PON", "TE"],"CIRCO":["CIR", "CO"],"CASACO":["CA", "SA", "CO"],"VESTIDO":["VES", "TI", "DO"],"ÓCULOS":["Ó", "CU", "LOS"],"TIJOLO":["TI", "JO", "LO"],"ESCADA":["ES", "CA", "DA"],"SABÃO":["SA", "BÃO"],"PIRATA":["PI", "RA", "TA"],"TESOURO":["TE", "SOU", "RO"],"DINHEIRO":["DI", "NHEI", "RO"],"RELÓGIO":["RE", "LÓ", "GIO"],"LANTERNA":["LAN", "TER", "NA"],"TRATOR":["TRA", "TOR"],"TROFÉU":["TRO", "FÉU"],"MEDALHA":["ME", "DA", "LHA"],"CORAÇÃO":["CO", "RA", "ÇÃO"],"PRESENTE":["PRE", "SEN", "TE"],"FANTASMA":["FAN", "TAS", "MA"],"VAMPIRO":["VAM", "PI", "RO"],"SEREIA":["SE", "REI", "A"],"COELHO":["CO", "E", "LHO"],"GALINHA":["GA", "LI", "NHA"],"CACHORRO":["CA", "CHOR", "RO"],"BRUXA":["BRU", "XA"],"RAINHA":["RA", "I", "NHA"],"CAMELO":["CA", "ME", "LO"],"GRILO":["GRI", "LO"],"FORMIGA":["FOR", "MI", "GA"],"ARANHA":["A", "RA", "NHA"],"JACARÉ":["JA", "CA", "RÉ"],"VIOLÃO":["VI", "O", "LÃO"],"COROA":["CO", "RO", "A"],"PIANO":["PI", "A", "NO"],"TAMBOR":["TAM", "BOR"],"PRAIA":["PRAI", "A"],"BISCOITO":["BIS", "COI", "TO"],"CEREJA":["CE", "RE", "JA"],"PÊSSEGO":["PÊS", "SE", "GO"],"ALFACE":["AL", "FA", "CE"],"PEPINO":["PE", "PI", "NO"],"CEBOLA":["CE", "BO", "LA"],"SALADA":["SA", "LA", "DA"],"IGREJA":["I", "GRE", "JA"],"FÁBRICA":["FÁ", "BRI", "CA"],"CAMINHÃO":["CA", "MI", "NHÃO"],"AMBULÂNCIA":["AM", "BU", "LÂN", "CI", "A"],"SEMÁFORO":["SE", "MÁ", "FO", "RO"],"PARAQUEDAS":["PA", "RA", "QUE", "DAS"],"JOANINHA":["JO", "A", "NI", "NHA"],"DIAMANTE":["DI", "A", "MAN", "TE"],"TELEVISÃO":["TE", "LE", "VI", "SÃO"],"VIOLINO":["VI", "O", "LI", "NO"],"MICROFONE":["MI", "CRO", "FO", "NE"],"UNICÓRNIO":["U", "NI", "CÓR", "NIO"],"DINOSSAURO":["DI", "NOS", "SAU", "RO"],"CARANGUEJO":["CA", "RAN", "GUE", "JO"],"HAMBÚRGUER":["HAM", "BÚR", "GUER"],"ABACATE":["A", "BA", "CA", "TE"],"ESTÁDIO":["ES", "TÁ", "DIO"]});
 (function dedupe(){ [1,2,3,4].forEach(n => { const seen = new Set(); PHASES[n].words = PHASES[n].words.filter(w => { if (seen.has(w.word)) return false; seen.add(w.word); return true; }); }); })();
+PHASES[5] = {
+  name: 'Fase 0.1 · Primeiras palavras',
+  modes: ['listen'],
+  questions: 8,
+  words: [{word:"LEÃO",emoji:"🦁",cat:"a",easy:true},{word:"GATO",emoji:"🐱",cat:"a",easy:true},{word:"CACHORRO",emoji:"🐶",cat:"a",easy:true},{word:"VACA",emoji:"🐄",cat:"a",easy:true},{word:"PATO",emoji:"🦆",cat:"a",easy:true},{word:"PORCO",emoji:"🐷",cat:"a",easy:true},{word:"CAVALO",emoji:"🐴",cat:"a",easy:true},{word:"SAPO",emoji:"🐸",cat:"a",easy:true},{word:"PEIXE",emoji:"🐟",cat:"a",easy:true},{word:"GALINHA",emoji:"🐔",cat:"a",easy:true},{word:"ELEFANTE",emoji:"🐘",cat:"a",easy:true},{word:"MACACO",emoji:"🐵",cat:"a",easy:true},{word:"OVELHA",emoji:"🐑",cat:"a",easy:true},{word:"COELHO",emoji:"🐰",cat:"a",easy:true},{word:"URSO",emoji:"🐻",cat:"a",easy:true},{word:"BOLA",emoji:"⚽",cat:"o",easy:true},{word:"CASA",emoji:"🏠",cat:"o",easy:true},{word:"CARRO",emoji:"🚗",cat:"o",easy:true},{word:"SOL",emoji:"☀️",cat:"o",easy:true},{word:"LUA",emoji:"🌙",cat:"o",easy:true},{word:"FLOR",emoji:"🌸",cat:"o",easy:true},{word:"BANANA",emoji:"🍌",cat:"o",easy:true},{word:"MAÇÃ",emoji:"🍎",cat:"o",easy:true},{word:"ÁGUA",emoji:"💧",cat:"o",easy:true},{word:"BEBÊ",emoji:"👶",cat:"o",easy:true},{word:"BALÃO",emoji:"🎈",cat:"o",easy:true},{word:"LIVRO",emoji:"📖",cat:"o",easy:true},{word:"SAPATO",emoji:"👟",cat:"o",easy:true},{word:"ESTRELA",emoji:"⭐",cat:"o",easy:true},{word:"AVIÃO",emoji:"✈️",cat:"o",easy:true},{word:"ÔNIBUS",emoji:"🚌",cat:"o",easy:true},{word:"PÃO",emoji:"🍞",cat:"o",easy:true},{word:"LEITE",emoji:"🥛",cat:"o",easy:true},{word:"VERMELHO",emoji:"🔴",cat:"c",easy:true},{word:"AZUL",emoji:"🔵",cat:"c",easy:true},{word:"AMARELO",emoji:"🟡",cat:"c",easy:true},{word:"VERDE",emoji:"🟢",cat:"c",easy:true},{word:"LARANJA",emoji:"🟠",cat:"c",easy:true},{word:"ROXO",emoji:"🟣",cat:"c",easy:true}]
+};
 PHASES[1].modes = ['letter'];            // 1 letra faltando
 PHASES[2].modes = ['letter','syllable']; // 2 letras ou 1 sílaba faltando
 PHASES[3].words = PHASES[3].words.filter(w => (SYLLABLE_MAP[w.word] || splitSyllablesFallback(w.word)).length >= 2); // sem palavras de 1 sílaba
@@ -2147,8 +2155,8 @@ function newProfile(name, av) {
   return p;
 }
 
-function skey(d, phase) { return (phase === 4 ? 'EN:' : phase === 0 ? 'LT:' : '') + d.word; }
-function phasePts() { return currentPhase <= 1 ? 5 : 5 + (currentPhase - 1) * 3; }
+function skey(d, phase) { return (phase === 4 ? 'EN:' : phase === 0 ? 'LT:' : phase === 5 ? 'TD:' : '') + d.word; }
+function phasePts() { return currentPhase === 5 ? 4 : currentPhase <= 1 ? 5 : 5 + (currentPhase - 1) * 3; }
 function rec(d, ok) {
   const p = P(); if (!p) return;
   const k = skey(d, currentPhase);
@@ -2156,7 +2164,7 @@ function rec(d, ok) {
   if (ok) st.ok++; else st.err++;
   st.last = Date.now();
 }
-function learnedCount(p) { return p ? Object.entries(p.stats).filter(([k, s]) => !k.startsWith('LT:') && s.ok >= 2 && s.ok >= s.err).length : 0; }
+function learnedCount(p) { return p ? Object.entries(p.stats).filter(([k, s]) => !k.startsWith('LT:') && !k.startsWith('TD:') && s.ok >= 2 && s.ok >= s.err).length : 0; }
 function lettersCount(p) { return p ? Object.entries(p.stats).filter(([k, s]) => k.startsWith('LT:') && s.ok >= 2 && s.ok >= s.err).length : 0; }
 
 // Escolha ponderada: palavras novas e as que a criança erra aparecem mais; as dominadas, menos.
@@ -2228,6 +2236,7 @@ const STICKERS = [
   { id:'listen5',e:'🎧', n:'Ouvido de ouro',    d:'5 acertos de ouvir',      ok:p=>p.listenOk>=5 },
   { id:'init5',  e:'🔍', n:'Detetive de letras',d:'5 acertos de primeira letra', ok:p=>p.initOk>=5 },
   { id:'eng10',  e:'🎓', n:'Bilíngue',          d:'10 acertos em inglês',    ok:p=>p.engOk>=10 },
+  { id:'td1',    e:'🍼', n:'Primeiras palavras', d:'3 estrelas na Fase 0.1',  ok:p=>(p.stars[5]||0)>=3 },
   { id:'tr1',    e:'✏️', n:'Mãozinha firme',    d:'3 estrelas na Fase 0',    ok:p=>(p.stars[0]||0)>=3 },
   { id:'tr10',   e:'🖍️', n:'Artista das letras',d:'Escreva 10 letras',       ok:p=>p.traceOk>=10 },
   { id:'tr26',   e:'📝', n:'Alfabeto completo', d:'Domine 26 letras',        ok:p=>lettersCount(p)>=26 },
@@ -2482,17 +2491,19 @@ function revealWord() {
 }
 
 function buildListenMode() {
+  const toddler = currentPhase === 5;
   document.querySelector('.action-row').style.display = 'none';
-  document.getElementById('themeEmoji').textContent = '🎧';
-  document.getElementById('questionLabel').textContent = '👂 Ouça e toque na figura certa!';
+  document.getElementById('themeEmoji').textContent = toddler ? '👂' : '🎧';
+  document.getElementById('questionLabel').textContent = toddler ? 'Toque no que você ouviu!' : '👂 Ouça e toque na figura certa!';
   const seen = new Set([currentData.emoji]);
   const wrongs = [];
-  for (const w of shuffle([...PHASES[currentPhase].words])) {
-    if (wrongs.length >= 2) break;
+  const pool = PHASES[currentPhase].words.filter(w => !toddler || (currentData.cat === 'c' ? w.cat === 'c' : w.cat !== 'c'));
+  for (const w of shuffle([...pool])) {
+    if (wrongs.length >= (toddler ? 1 : 2)) break;
     if (!seen.has(w.emoji) && w.word !== currentData.word) { seen.add(w.emoji); wrongs.push(w); }
   }
   const grid = document.getElementById('optionsGrid');
-  grid.className = 'choose-grid row'; grid.innerHTML = '';
+  grid.className = 'choose-grid row' + (toddler ? ' toddler' : ''); grid.innerHTML = '';
   shuffle([currentData, ...wrongs]).forEach(o => {
     const b = document.createElement('button');
     b.className = 'choose-btn emoji-opt'; b.textContent = o.emoji;
@@ -2520,6 +2531,13 @@ function buildInitialMode() {
 }
 
 function pickInstant(btn, correct, kind, letter) {
+  if (currentPhase === 5 && !correct) {
+    // criança pequena: sem punição, tenta de novo ouvindo a palavra outra vez
+    btn.classList.add('wrong-choice', 'disabled'); playChime(false);
+    if (!qWrong) { qWrong = true; combo = 0; gameErrors++; rec(currentData, false); }
+    setTimeout(() => speak(currentData.word, { rate: 0.7 }), 500);
+    return;
+  }
   document.querySelectorAll('.choose-btn').forEach(b => b.classList.add('disabled'));
   btn.classList.remove('disabled');
   btn.classList.add(correct ? 'correct-choice' : 'wrong-choice');
@@ -2558,10 +2576,12 @@ function renderHome(first) {
   document.getElementById('profName').textContent = p ? p.name : 'Quem vai jogar?';
   const rec = recommendedPhase(p);
   if (first || window.__phaseAuto !== false) currentPhase = rec;
-  document.querySelectorAll('#phaseSelect .phase-btn').forEach((b, n) => {
+  document.querySelectorAll('#phaseSelect .phase-btn').forEach(b => {
+    const n = +b.dataset.ph;
     const st = p ? (p.stars[n] || 0) : 0;
-    const icon = ['✏️','🌱','🌿','🌳','🌟'][n];
-    b.innerHTML = `<span>${icon} Fase ${n}</span><span class="ps">${'⭐'.repeat(st)}${'☆'.repeat(3 - st)}</span>` + (p && n === rec ? '<span class="rtag">Para você</span>' : '');
+    const icon = {5:'🍼',0:'✏️',1:'🌱',2:'🌿',3:'🌳',4:'🌟'}[n];
+    const nm = n === 5 ? '0.1' : n;
+    b.innerHTML = `<span>${icon} Fase ${nm}</span><span class="ps">${'⭐'.repeat(st)}${'☆'.repeat(3 - st)}</span>` + (p && n === rec ? '<span class="rtag">Para você</span>' : '');
     b.classList.toggle('active', n === currentPhase);
     b.classList.toggle('rec', !!p && n === rec);
     b.onclick = () => { window.__phaseAuto = false; selectPhase(b, n); };
@@ -2631,7 +2651,7 @@ function renderParents() {
     const acc = ok + err ? Math.round(ok * 100 / (ok + err)) : 0;
     const hard = Object.entries(p.stats).filter(([, s]) => s.err > 0).sort((a, b) => (b[1].err - b[1].ok * 0.5) - (a[1].err - a[1].ok * 0.5)).slice(0, 8)
       .map(([k]) => `<i>${esc(k.replace('EN:', ''))}${k.startsWith('EN:') ? ' (EN)' : ''}</i>`).join('') || 'Nenhuma ainda.';
-    const phases = [0, 1, 2, 3, 4].map(n => `Fase ${n}: ${'⭐'.repeat(p.stars[n] || 0) || '-'}`).join(' · ') + ` · Letras escritas: ${lettersCount(p)}/26`;
+    const phases = [5, 0, 1, 2, 3, 4].map(n => `Fase ${n === 5 ? '0.1' : n}: ${'⭐'.repeat(p.stars[n] || 0) || '-'}`).join(' · ') + ` · Letras escritas: ${lettersCount(p)}/26`;
     const days = new Set(p.days).size;
     return `<div class="pn-card"><h3><span>${p.av}</span>${esc(p.name)}</h3>
       <div class="pn-grid"><div><b>${p.games}</b><span>jogos</span></div><div><b>${learnedCount(p)}</b><span>palavras aprendidas</span></div><div><b>${acc}%</b><span>acertos</span></div>
