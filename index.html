@@ -1385,6 +1385,7 @@ Object.assign(SYLLABLE_MAP, {"CASA":["CA", "SA"],"LUA":["LU", "A"],"SOL":["SOL"]
 (function dedupe(){ [1,2,3,4].forEach(n => { const seen = new Set(); PHASES[n].words = PHASES[n].words.filter(w => { if (seen.has(w.word)) return false; seen.add(w.word); return true; }); }); })();
 PHASES[1].modes = ['letter'];            // 1 letra faltando
 PHASES[2].modes = ['letter','syllable']; // 2 letras ou 1 sílaba faltando
+PHASES[3].words = PHASES[3].words.filter(w => (SYLLABLE_MAP[w.word] || splitSyllablesFallback(w.word)).length >= 2); // sem palavras de 1 sílaba
 PHASES[3].modes = ['build'];             // montar a palavra com todas as sílabas
 
 // ============================================================
@@ -2421,7 +2422,6 @@ function traceSuccess() {
   const pts = awardCorrect(phasePts());
   const pr = P(); if (pr) pr.traceOk++;
   spawnParticles(true); vibrateFeedback([30]);
-  setTimeout(() => speak(currentData.ex, { rate: 0.8 }), 300);
   setTimeout(() => showFeedback(true, pts), 1500);
 }
 function traceFailCount() { combo = 0; gameErrors++; if (!qWrong) { qWrong = true; rec(currentData, false); } }
