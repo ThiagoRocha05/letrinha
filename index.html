@@ -1484,9 +1484,12 @@ function speak(text, opts = {}) {
   } catch (e) { /* navegador sem suporte */ }
 }
 
+const LETTER_NAMES = {A:'á',B:'bê',C:'cê',D:'dê',E:'é',F:'éfe',G:'gê',H:'agá',I:'i',J:'jota',K:'cá',L:'éle',M:'ême',N:'ene',O:'ó',P:'pê',Q:'quê',R:'érre',S:'ésse',T:'tê',U:'u',V:'vê',W:'dáblio',X:'xis',Y:'ípsilon',Z:'zê'};
+const letterName = l => LETTER_NAMES[String(l).toUpperCase()] || l;
+
 function speakCurrentWord(force = false) {
   if (!currentData) return;
-  if (currentMode === 'trace') { speak(`${currentData.word} de ${currentData.ex}`, { force, rate: 0.8 }); return; }
+  if (currentMode === 'trace') { speak(`${letterName(currentData.word)}, de ${currentData.ex}`, { force, rate: 0.8 }); return; }
   if (currentMode === 'choose') {
     speak(currentData.hint || 'What is this?', { lang: 'en-US', rate: 0.85, force });
   } else {
@@ -1860,7 +1863,7 @@ function pickOption(btn, mode) {
   // ambígua fora do contexto da palavra e, sem voz em português instalada, acaba caindo
   // numa voz em inglês que soletra tudo. A palavra inteira já é falada certinho ao
   // carregar a pergunta e pelo botão "Ouvir".
-  if (mode === 'letter') speak(value, { rate: 0.75 });
+  if (mode === 'letter') speak(value.length === 1 ? letterName(value) : value, { rate: 0.75 });
 
   if(mode === 'build' || mode === 'letter') {
     // Fill next empty slot sequentially
