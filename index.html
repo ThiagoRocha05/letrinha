@@ -1462,20 +1462,30 @@ function speak(text, opts = {}) {
   if (!force && !soundOn) return;
   if (!('speechSynthesis' in window)) return;
   try {
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(naturalCase(text));
-    const voice = pickVoice(lang);
-    if (voice) u.voice = voice;
-    u.lang = voice ? voice.lang : lang;
-    u.rate = rate;
-    u.pitch = 1.05;
-    window.speechSynthesis.speak(u);
+    const ss = window.speechSynthesis;
+    ss.cancel();
+    const token = (window.__spTok = (window.__spTok || 0) + 1);
+    // Chrome/Android perdem a fala se speak() vier colado no cancel(); um respiro curto resolve.
+    setTimeout(() => {
+      if (token !== window.__spTok) return;
+      try {
+        const u = new SpeechSynthesisUtterance(naturalCase(text));
+        const voice = pickVoice(lang);
+        if (voice) u.voice = voice;
+        u.lang = voice ? voice.lang : lang;
+        u.rate = rate;
+        u.pitch = 1.05;
+        window.__spLast = u; // evita coleta de lixo antes do fim da fala
+        if (ss.paused) ss.resume();
+        ss.speak(u);
+      } catch (e) {}
+    }, 70);
   } catch (e) { /* navegador sem suporte */ }
 }
 
 function speakCurrentWord(force = false) {
   if (!currentData) return;
-  if (currentMode === 'trace') { speak(`${currentData.word}. ${currentData.word} de ${currentData.ex}`, { force, rate: 0.8 }); return; }
+  if (currentMode === 'trace') { speak(`${currentData.word} de ${currentData.ex}`, { force, rate: 0.8 }); return; }
   if (currentMode === 'choose') {
     speak(currentData.hint || 'What is this?', { lang: 'en-US', rate: 0.85, force });
   } else {
@@ -1927,6 +1937,7 @@ function onCorrect() {
   playChime(true);
   vibrateFeedback([30]);
 
+  setTimeout(() => speak(currentData.word, { rate: 0.8 }), 350);
   setTimeout(()=>{
     showFeedback(true, pts);
   }, 400);
@@ -2410,7 +2421,7 @@ function traceSuccess() {
   const pts = awardCorrect(phasePts());
   const pr = P(); if (pr) pr.traceOk++;
   spawnParticles(true); vibrateFeedback([30]);
-  setTimeout(() => speak(`${currentData.word} de ${currentData.ex}`, { rate: 0.8 }), 300);
+  setTimeout(() => speak(currentData.ex, { rate: 0.8 }), 300);
   setTimeout(() => showFeedback(true, pts), 1500);
 }
 function traceFailCount() { combo = 0; gameErrors++; if (!qWrong) { qWrong = true; rec(currentData, false); } }
