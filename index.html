@@ -10,9 +10,13 @@
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <title>Letrinha 🌟</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=ABeeZee:ital@0;1&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
+/* fontes locais (OFL-1.1), sem pedir nada a servidores externos */
+@font-face{font-family:'Nunito';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/nunito-latin-400-normal.woff2) format('woff2');}
+@font-face{font-family:'Nunito';font-style:normal;font-weight:700;font-display:swap;src:url(fonts/nunito-latin-700-normal.woff2) format('woff2');}
+@font-face{font-family:'Nunito';font-style:normal;font-weight:900;font-display:swap;src:url(fonts/nunito-latin-900-normal.woff2) format('woff2');}
+@font-face{font-family:'ABeeZee';font-style:normal;font-weight:400;font-display:swap;src:url(fonts/abeezee-latin-400-normal.woff2) format('woff2');}
+@font-face{font-family:'ABeeZee';font-style:italic;font-weight:400;font-display:swap;src:url(fonts/abeezee-latin-400-italic.woff2) format('woff2');}
   :root {
     --coral:    #FF6B6B;
     --yellow:   #FFE66D;
@@ -1005,7 +1009,7 @@ const PHASES = {
       { word:'LUVA', emoji:'🧤', hint:'🧤' },
       { word:'BOTA', emoji:'👢', hint:'👢' },
       { word:'MEIA', emoji:'🧦', hint:'🧦' },
-      { word:'BONE', emoji:'🧢', hint:'🧢' },
+      { word:'BONÉ', emoji:'🧢', hint:'🧢' },
       { word:'FADA', emoji:'🧚', hint:'🧚' },
       { word:'ANJO', emoji:'👼', hint:'👼' },
       { word:'MAPA', emoji:'🗺️', hint:'🗺️' },
@@ -1196,7 +1200,7 @@ const PHASES = {
       { word:'ROXO',      eng:'PURPLE',    emoji:'🟣',  hint:'What color is this?' },
       { word:'PRETO',     eng:'BLACK',     emoji:'⚫',  hint:'What color is this?' },
       { word:'BRANCO',    eng:'WHITE',     emoji:'⚪',  hint:'What color is this?' },
-      { word:'ROSA',      eng:'PINK',      emoji:'🌸',  hint:'What color is this?' },
+      { word:'ROSA',      eng:'PINK',      emoji:'💗',  hint:'What color is this?' },
       { word:'CINZA',     eng:'GRAY',      emoji:'🩶',  hint:'What color is this?' },
       // Family
       { word:'MÃE',       eng:'MOTHER',    emoji:'👩',  hint:'Who is this?' },
@@ -1298,7 +1302,7 @@ const SYLLABLE_MAP = {
   PIPA:['PI','PA'], SINO:['SI','NO'], VELA:['VE','LA'], MOTO:['MO','TO'],
   FACA:['FA','CA'], TEIA:['TEI','A'], COLA:['CO','LA'], ONDA:['ON','DA'],
   TREM:['TREM'], CARRO:['CAR','RO'], LUVA:['LU','VA'], BOTA:['BO','TA'],
-  MEIA:['MEI','A'], BONE:['BO','NE'], FADA:['FA','DA'], ANJO:['AN','JO'],
+  MEIA:['MEI','A'], BONÉ:['BO','NÉ'], FADA:['FA','DA'], ANJO:['AN','JO'],
   MAPA:['MA','PA'], FOTO:['FO','TO'], NEVE:['NE','VE'],
   DADO:['DA','DO'], GELO:['GE','LO'], FOGO:['FO','GO'], MILHO:['MI','LHO'],
   COCO:['CO','CO'], NINHO:['NI','NHO'], ANEL:['A','NEL'], BULE:['BU','LE'],
@@ -1340,8 +1344,7 @@ const SYLLABLE_MAP = {
   RINOCERONTE:['RI','NO','CE','RON','TE'], FLAMINGO:['FLA','MIN','GO'],
   PINGUIM:['PIN','GUIM'], CARACOL:['CA','RA','COL'], BALEIA:['BA','LEI','A'],
   GOLFINHO:['GOL','FI','NHO'], CANGURU:['CAN','GU','RU'],
-  CAMALEÃO:['CA','MA','LE','ÃO'], ORNITORRINCO:['OR','NI','TOR','RIN','CO'],
-  TAMANDUÁ:['TA','MAN','DU','Á'],
+  CAMALEÃO:['CA','MA','LE','ÃO'],
   PLANETA:['PLA','NE','TA'], ESTRELA:['ES','TRE','LA'], COMETA:['CO','ME','TA'],
   TORNADO:['TOR','NA','DO'], CACHOEIRA:['CA','CHO','EI','RA'],
   FLORESTA:['FLO','RES','TA'], MONTANHA:['MON','TA','NHA'],
@@ -1401,6 +1404,7 @@ PHASES[3].modes = ['build'];             // montar a palavra com todas as sílab
 // ============================================================
 
 function init() {
+  try { navigator.storage?.persist?.(); } catch (e) {}
   // Stars
   const sf = document.getElementById('starField');
   for(let i=0;i<60;i++){
@@ -1740,7 +1744,7 @@ function buildSyllableMode() {
 
 function generateSyllableDistractors(correct, sylls, word) {
   // Pull from other words' syllables
-  const allSylls = Object.values(SYLLABLE_MAP).flat().filter(s=>s!==correct && !sylls.includes(s));
+  const allSylls = [...new Set(Object.values(SYLLABLE_MAP).flat())].filter(s=>s!==correct && !sylls.includes(s));
   return shuffle(allSylls).slice(0,3);
 }
 
@@ -2635,9 +2639,9 @@ function openStickers() {
 // ---- adultos ----
 let parentAnswer = 0;
 function openParents() {
-  const a = 4 + Math.floor(Math.random() * 6), b = 4 + Math.floor(Math.random() * 6);
-  parentAnswer = a + b;
-  openOv(`<h2>👨‍👩‍👧 Área dos adultos</h2><p class="sub">Para entrar, responda: quanto é <b>${a} + ${b}</b>?</p>
+  const a = 6 + Math.floor(Math.random() * 4), b = 6 + Math.floor(Math.random() * 4);
+  parentAnswer = a * b;
+  openOv(`<h2>👨‍👩‍👧 Área dos adultos</h2><p class="sub">Para entrar, responda: quanto é <b>${a} × ${b}</b>?</p>
     <input class="ov-input" id="pgAns" inputmode="numeric" maxlength="3" placeholder="?" autocomplete="off">
     <div id="pgMsg" class="sub" style="min-height:20px"></div>
     <button class="ov-btn" data-act="pgok">Entrar</button><button class="ov-btn ghost" data-act="close">Voltar</button>`);
