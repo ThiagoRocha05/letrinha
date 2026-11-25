@@ -22,11 +22,13 @@ Jogo gratuito de alfabetização para crianças de 2 a 7 anos. A criança escrev
 - **Android (Chrome):** abra o link, toque no menu de três pontos e escolha "Adicionar à tela inicial".
 - **iPhone e iPad (Safari):** abra o link, toque em Compartilhar e escolha "Adicionar à Tela de Início".
 
-Depois de instalado, o jogo abre em tela cheia e funciona mesmo sem internet.
+Depois de instalado, o jogo abre em tela cheia. Depois da primeira abertura com internet, funciona mesmo offline.
+
+Sem som? Confira se o aparelho tem uma voz em português instalada nas configurações de texto para fala. No iPhone, a voz começa depois do primeiro toque na tela.
 
 ## Privacidade
 
-O progresso fica salvo só no próprio aparelho. Não há cadastro, anúncios, rastreamento nem envio de dados para lugar nenhum.
+O progresso fica salvo só no próprio aparelho. Não há cadastro, anúncios nem rastreamento, e o jogo não coleta nenhum dado da criança. A voz usa o leitor de texto do aparelho; quando o navegador só oferece uma voz online, o jogo deixa de falar o nome da criança.
 
 ## Autor
 

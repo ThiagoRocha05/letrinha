@@ -1465,10 +1465,19 @@ function loadVoices() {
 function pickVoice(lang) {
   if (!__voicesCache.length) __voicesCache = window.speechSynthesis.getVoices();
   const prefix = lang.split('-')[0];
-  return __voicesCache.find(v => v.lang === lang)
+  const loc = __voicesCache.filter(v => v.localService);
+  return loc.find(v => v.lang === lang)
+      || loc.find(v => v.lang && v.lang.startsWith(prefix))
+      || __voicesCache.find(v => v.lang === lang)
       || __voicesCache.find(v => v.lang && v.lang.startsWith(prefix))
       || null;
 }
+
+// Vozes "online" (ex.: Google no Chrome de computador) mandam o texto para um servidor.
+// Por isso preferimos vozes locais e, se só houver voz online, o nome da criança não é falado.
+function __semNomes(t){ try{ (DB.profiles||[]).forEach(p=>{ if(!p||!p.name) return; const n=p.name.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  t=t.replace(new RegExp(',\\s*'+n+'(?=\\s*[!.?])','gi'),'').replace(new RegExp('\\b'+n+'\\b','gi'),'a criança'); }); }catch(e){} return t; }
+
 
 function speak(text, opts = {}) {
   const { lang = 'pt-BR', rate = 0.85, force = false } = opts;
@@ -1482,8 +1491,8 @@ function speak(text, opts = {}) {
     setTimeout(() => {
       if (token !== window.__spTok) return;
       try {
-        const u = new SpeechSynthesisUtterance(naturalCase(text));
         const voice = pickVoice(lang);
+        const u = new SpeechSynthesisUtterance(naturalCase(voice && voice.localService ? text : __semNomes(text)));
         if (voice) u.voice = voice;
         u.lang = voice ? voice.lang : lang;
         u.rate = rate;
@@ -2113,7 +2122,7 @@ function doExit() {
 
 // ============================================================
 //  V2: PERFIS, PROGRESSO, ADAPTAÇÃO, FIGURINHAS, ÁREA DOS ADULTOS
-//  Tudo fica só neste aparelho (localStorage). Nada é enviado.
+//  Tudo fica só neste aparelho (localStorage). O jogo não envia dados.
 // ============================================================
 const STORE_KEY = 'letrinha_v2';
 const AVATARS = ['🦊','🐯','🐼','🦄','🐸','🐙','🦁','🐰','🐵','🦋','🐬','🐲'];
@@ -2665,7 +2674,7 @@ function renderParents() {
       <label class="pn-opt"><input type="checkbox" data-nolives="${esc(p.id)}" ${p.noLives ? 'checked' : ''}> Modo tranquilo (sem perder vidas)</label>
       <div class="pn-acts"><button class="ov-btn ghost" data-reset="${esc(p.id)}">Zerar progresso</button><button class="ov-btn danger" data-del="${esc(p.id)}">Remover jogador</button></div></div>`;
   }).join('');
-  openOv(`<h2>👨‍👩‍👧 Área dos adultos</h2><p class="sub">Os dados ficam somente neste aparelho. Nada é enviado nem coletado.</p>${cards}<button class="ov-btn" data-act="close">Fechar</button>`);
+  openOv(`<h2>👨‍👩‍👧 Área dos adultos</h2><p class="sub">O progresso fica somente neste aparelho. O jogo não coleta nenhum dado da criança.</p>${cards}<button class="ov-btn" data-act="close">Fechar</button>`);
 }
 
 const armed = {};
